@@ -41,3 +41,16 @@ def do_conversion(file):
 
 if __name__ == "__main__":
     doc2txt(sys.argv[1:])
+
+def text2str(path, delimiter='.'):
+    file = open(path, 'r')
+    unparsed_info = file.read()
+    element_list = [] # Make an empty list
+
+    for elements in unparsed_info.split(delimiter):
+        e = elements.strip(delimiter)
+        if e != '':
+		    
+            element_list.append(e.replace('\n','')) #Append to list
+    
+    return element_list
