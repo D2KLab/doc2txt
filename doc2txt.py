@@ -1,5 +1,6 @@
 import os
 import sys
+import re
 
 try:
     import textract
@@ -39,9 +40,6 @@ def do_conversion(file):
             print("%s\n" % (ext))
         sys.exit(2)
 
-if __name__ == "__main__":
-    doc2txt(sys.argv[1:])
-
 def text2str(path, delimiter='.'):
     file = open(path, 'r')
     unparsed_info = file.read()
@@ -54,3 +52,66 @@ def text2str(path, delimiter='.'):
             element_list.append(e.replace('\n','')) #Append to list
     
     return element_list
+
+def normalization(path, delimiter='.'):
+    '''
+    Each line is a complete phrase
+    '''
+    file_input = open(path, 'r')
+
+    #print(file_input)
+    file_name, file_extension = os.path.splitext(os.path.basename(path))
+
+    unparsed_info = file_input.read()
+
+    file_output = open(file_name + "_nomalized" + file_extension, 'w')
+    #print(unparsed_info)
+    bc_text = ' '.join(unparsed_info.split('\n'))
+    
+    sentenceSplit = filter(None, bc_text.split("."))
+    
+    for s in sentenceSplit :
+        print(s)
+        #print(s.strip() + ".")
+        file_output.write(s.strip() + ".\n")
+
+def Find(string): 
+    regex = r"(?i)\b((?:https?://|www\d{0,3}[.]|[a-z0-9.\-]+[.][a-z]{2,4}/)(?:[^\s()<>]+|\(([^\s()<>]+|(\([^\s()<>]+\)))*\))+(?:\(([^\s()<>]+|(\([^\s()<>]+\)))*\)|[^\s`!()\[\]{};:'\".,<>?«»“”‘’]))"
+    url = re.findall(regex,string)       
+    return [x[0] for x in url]
+
+def purge_urls(path):
+    file_name, file_extension = os.path.splitext(os.path.basename(path))
+
+    file_input = open(path, 'r')
+
+    file_output = open(file_name + '_purged.txt', 'w')
+    file_index = open(file_name + '_index.txt', 'w')
+
+    unparsed_info = file_input.read().replace('-\n', '')
+    #print(unparsed_info)
+    index_count = 1
+
+    urls = Find(unparsed_info)
+    print(urls)
+
+    for element in unparsed_info.splitlines():
+        urls = Find(element)
+        if len(urls) != 0:
+            for url in urls:
+                element = element.replace(url, str(index_count), 1)
+                file_index.write(str(index_count) + ' - ' + url)
+                index_count = index_count + 1
+
+        file_output.write(element + '\n')
+
+    file_output.close()
+    file_input.close()
+    file_index.close()
+
+    normalization(file_name + '_purged.txt')
+
+if __name__ == "__main__":
+    #doc2txt(sys.argv[1:])
+    #normalization(sys.argv[1])
+    purge_urls(sys.argv[1])
