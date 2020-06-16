@@ -71,7 +71,7 @@ def normalization(path, delimiter='.'):
     sentenceSplit = filter(None, bc_text.split("."))
     
     for s in sentenceSplit :
-        print(s)
+        #print(s)
         #print(s.strip() + ".")
         file_output.write(s.strip() + ".\n")
 
@@ -93,17 +93,21 @@ def purge_urls(path):
     index_count = 1
 
     urls = Find(unparsed_info)
-    print(urls)
 
     for element in unparsed_info.splitlines():
         urls = Find(element)
         if len(urls) != 0:
             for url in urls:
                 element = element.replace(url, str(index_count), 1)
-                file_index.write(str(index_count) + ' - ' + url)
+                file_index.write(str(index_count) + ' - ' + url + '\n')
                 index_count = index_count + 1
 
-        file_output.write(element + '\n')
+        char_presence = re.search('[a-zA-Z]', element)
+        chapter_present = re.search(r'^\d{1,}\.', element) 
+
+        if char_presence and not chapter_present:
+            file_output.write(element + '\n')
+
 
     file_output.close()
     file_input.close()
