@@ -20,5 +20,9 @@ NB: It may also be necessary to install ```zlib1g-dev``` on Docker instances of 
 ### Usage
 Example of usage:
 ```
-python doc2txt.py <path_to_file> <path_to_folder>
+python doc2txt.py <path_to_file>
+```
+or:
+```
+python doc2txt.py <path_to_folder>
 ```
