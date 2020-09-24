@@ -61,16 +61,6 @@ def do_conversion(file):
             print("%s\n" % (ext))
         sys.exit(2)
 
-def to_list(data):
-    element_list = [] # Make an empty list
-
-    for element in re.split('[.\n]', data):
-        stripped_element = element.strip()
-        if stripped_element != '':	    
-            element_list.append(stripped_element) #Append to list the striped element
-    
-    return element_list
-
 def normalization(text, delimiter='.'):
     '''
     Each line is a complete phrase
