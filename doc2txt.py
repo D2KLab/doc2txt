@@ -7,6 +7,7 @@ import pdb
 
 from pdfminer.pdfparser import PDFParser
 from pdfminer.pdfdocument import PDFDocument
+from pdfminer.pdfdocument import PDFNoOutlines
 
 from urlextract import URLExtract
 
@@ -47,8 +48,11 @@ def do_conversion(file):
 
         f = open(file_name + '.txt', 'w')
 
-        if file_extension == ".pdf":
-            text = purge_index(text, file)
+        try:
+            if file_extension == ".pdf":
+                text = purge_index(text, file)
+        except PDFNoOutlines:
+            print("No outline")
 
         data = purge_urls(text, file_name)
 
