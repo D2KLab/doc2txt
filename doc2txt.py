@@ -10,6 +10,7 @@ from pdfminer.pdfdocument import PDFDocument
 from pdfminer.pdfdocument import PDFNoOutlines
 
 from urlextract import URLExtract
+import string
 
 from docx import Document
 
@@ -104,7 +105,8 @@ def purge_urls(text, file_name):
     
     if len(urls) != 0:
         for url in urls:
-            unparsed_info = re.sub(url, '[URL_'+str(index_count)+']', unparsed_info)
+            print(url)
+            unparsed_info = re.sub(url.rstrip(string.punctuation), '[URL_'+str(index_count)+']', unparsed_info)
             unparsed_info = unparsed_info + '\n'
             file_index.write('[URL_'+str(index_count)+']' + '-' + url + '\n')
             index_count = index_count + 1
@@ -150,3 +152,8 @@ def remove_header_footer(file):
         document.sections[i].footer.is_linked_to_previous = True
 
     document.save(os.path.splitext(file)[0] + '.docx') 
+
+if __name__ == "__main__":
+    #doc2txt(sys.argv[1:])	
+    #normalization(sys.argv[1])	
+    convert_to_txt(sys.argv[1])
