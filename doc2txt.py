@@ -3,7 +3,6 @@
 import os
 import sys
 import re
-import pdb
 
 from pdfminer.pdfparser import PDFParser
 from pdfminer.pdfdocument import PDFDocument
@@ -13,6 +12,7 @@ from urlextract import URLExtract
 import string
 
 from docx import Document
+import json
 
 try:
     import textract
@@ -96,7 +96,8 @@ def Find(string):
     return urls
 
 def purge_urls(text, file_name):
-    file_index = open(file_name + '_urls.txt', 'w')
+    urls_dict = {}
+    file_index = open(file_name + '_urls.json', 'w')
 
     unparsed_info = text.replace('-\n', '')
     index_count = 1
@@ -105,14 +106,15 @@ def purge_urls(text, file_name):
     
     if len(urls) != 0:
         for url in urls:
-            print(url)
-            unparsed_info = re.sub(url.rstrip(string.punctuation), '[URL_'+str(index_count)+']', unparsed_info)
+            unparsed_info = re.sub(url.rstrip(string.punctuation), '[URL_'+str(index_count)+']', unparsed_info, 1)
             unparsed_info = unparsed_info + '\n'
-            file_index.write('[URL_'+str(index_count)+']' + '-' + url + '\n')
+            #file_index.write('[URL_'+str(index_count)+']' + '-' + url + '\n')
+            urls_dict['[URL_'+str(index_count)+']'] = url.rstrip(string.punctuation)
             index_count = index_count + 1
 
     unparsed_info = re.sub(r'^\d{1,}\.[\s][a-zA-Z]*', '', unparsed_info)
 
+    file_index.write(json.dumps(urls_dict))
     file_index.close()
     return normalization(unparsed_info)
 
