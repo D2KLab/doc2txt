@@ -105,11 +105,11 @@ def purge_urls(text, file_name):
     urls = Find(unparsed_info)
     
     if len(urls) != 0:
+        punctuation = '!"#$%&\'()*+,-.:;<=>?@[\\]^_`{|}~'
         for url in urls:
-            unparsed_info = re.sub(url.rstrip(string.punctuation), '[URL_'+str(index_count)+']', unparsed_info, 1)
+            unparsed_info = unparsed_info.replace(url.rstrip(punctuation), '[URL_'+str(index_count)+']', 1)
             unparsed_info = unparsed_info + '\n'
-            #file_index.write('[URL_'+str(index_count)+']' + '-' + url + '\n')
-            urls_dict['[URL_'+str(index_count)+']'] = url.rstrip(string.punctuation)
+            urls_dict['[URL_'+str(index_count)+']'] = url.rstrip(punctuation)
             index_count = index_count + 1
 
     unparsed_info = re.sub(r'^\d{1,}\.[\s][a-zA-Z]*', '', unparsed_info)
