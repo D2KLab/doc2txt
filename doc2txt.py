@@ -56,9 +56,7 @@ def do_conversion(file):
             print("No outline")
 
         data = purge_urls(text, file_name)
-
-        # remove • unicode and substitute with -
-        data = re.sub('\u2022', '-', data)   
+  
         f.write(data)
         f.close()
         return data
@@ -116,7 +114,20 @@ def purge_urls(text, file_name):
 
     file_index.write(json.dumps(urls_dict))
     file_index.close()
-    return normalization(unparsed_info)
+
+    data = normalization(unparsed_info)
+    
+    return punctuation_normalization(data)
+
+def punctuation_normalization(data):
+
+    # remove • unicode and substitute with -
+    normalized_data = re.sub('\u2022', '-', data) 
+
+    # remove ‘ ’ unicodes and substitute with '
+    normalized_data = re.sub(u"\u2018", "'", normalized_data)
+    normalized_data = re.sub(u"\u2019", "'", normalized_data)
+    return normalized_data
 
 def purge_index(data, file):
 
