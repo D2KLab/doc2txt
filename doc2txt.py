@@ -76,17 +76,34 @@ def normalization(text, delimiter='.'):
     bc_text = ' '.join(unparsed_info.split('\n'))
     
     sentenceSplit = bc_text.split(".")
+
+    final_splitted_sentences = []
+
+    for idx, s in enumerate(sentenceSplit):
+        try:
+            new_element = re.sub('\s\s+', ' ', s).strip()
+
+            if new_element[0].isdigit() or not new_element[0].isalpha():
+                final_splitted_sentences[len(final_splitted_sentences)-1] = (final_splitted_sentences[len(final_splitted_sentences)-1] + '  ' + new_element + '  ')#.strip()
+                continue
+            if len(new_element.split()) == 1:
+                final_splitted_sentences[len(final_splitted_sentences)-1] = (final_splitted_sentences[len(final_splitted_sentences)-1] + '  ' + new_element + '  ')#.strip()
+                continue
+            final_splitted_sentences.append(new_element.strip())
+
+        except IndexError:
+            print('index error: ' + str(idx))  
     
     datas = ''
-    for s in sentenceSplit:
+    for s in final_splitted_sentences:
         clean_s = re.sub('\s\s+', ' ', s)
         if len(clean_s.strip()) > 0 and any(c.isalpha() for c in clean_s):
-            datas = datas + clean_s.strip() + ".\n"
+            datas = datas + s + ".\n"
         
-
+#len(test_string.split())
     #file_output.write(datas)
-    
-    return datas
+    datas = re.sub(r'[ ]{2,}', '.', datas)
+    return re.sub(r'\.+', ".", datas)
 
 def Find(string): 
     extractor = URLExtract()
