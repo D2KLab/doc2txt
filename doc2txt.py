@@ -82,7 +82,8 @@ def normalization(text, delimiter='.'):
     for idx, s in enumerate(sentenceSplit):
         try:
             new_element = re.sub('\s\s+', ' ', s).strip()
-
+            if len(new_element) == 0:
+                continue
             if new_element[0].isdigit() or not new_element[0].isalpha():
                 final_splitted_sentences[len(final_splitted_sentences)-1] = (final_splitted_sentences[len(final_splitted_sentences)-1] + '  ' + new_element + '  ')#.strip()
                 continue
@@ -91,8 +92,8 @@ def normalization(text, delimiter='.'):
                 continue
             final_splitted_sentences.append(new_element.strip())
 
-        except IndexError:
-            print('index error: ' + str(idx))  
+        except IndexError as e:
+            print('Index error: ' + str(idx))  
     
     datas = ''
     for s in final_splitted_sentences:
